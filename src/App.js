@@ -1,5 +1,14 @@
 import { createContext, useContext, useState } from "react";
 import useEventbus from "./event";
+import styled from 'styled-components';
+
+const Color = styled.button`
+  color: red;
+`;
+
+const Button = styled(Color)`
+  font-size: ${props => props.size}px;
+`;
 
 const ElementContext = createContext();
 
@@ -56,7 +65,7 @@ function App({ level }) {
       <ul className="App">
         <li>
           App {level} {context?.selected ? "Yes" : ""}
-          <button onClick={click}>OK ({index})</button>
+          <Button onClick={click} size={level + 10}>OK ({index})</Button>
           <App level={level + 1} />
         </li>
       </ul>
