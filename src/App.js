@@ -10,7 +10,7 @@ function App() {
   return (
     <>
       <button onClick={() => dispatch({ type: "updateRoot" })}>OK</button>
-      {widgets.root.children.map((widgetId) => {
+      {widgets[0].children.map((widgetId) => {
         return <Renderer key={widgetId} level={0} widgetId={widgetId} />;
       })}
     </>

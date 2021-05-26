@@ -43,8 +43,8 @@ console.log(getWidget);
 function Renderer({ widgetId, level, indx }) {
   const context = useContext(ElementContext);
 
-  // const widget = useSelector((store) => store.widgets[widgetId]);
-  const widget = useSelector((store) => getWidget(widgetId)(store));
+  const widget = useSelector((store) => store.widgets.find(item => item.id == widgetId));
+  // const widget = useSelector((store) => getWidget(widgetId)(store));
   const dispatch = useDispatch();
 
   console.log(widgetId, widget);
