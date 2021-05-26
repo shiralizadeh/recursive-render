@@ -1,5 +1,4 @@
 import { createStore } from "redux";
-// import update from "immutability-helper";
 
 const initialState = {
   layout: [
@@ -93,7 +92,6 @@ function rootReducer(state = initialState, action) {
 
   if (action.type === "updateWidget") {
     console.log("changed");
-    // action.payload.title = "11111111";
 
     return {
       ...state,
@@ -105,27 +103,13 @@ function rootReducer(state = initialState, action) {
         },
       },
     };
-
-    // return {
-    //   ...state,
-    //   widgets: [...state.widgets],
-    // };
   }
 
   if (action.type === "updateRoot") {
-    // state.widgets[0].children[1].title = "222222222";
-
-    // return {
-    //   ...state,
-    //   widgets: [
-    //     ...state.widgets
-    //   ]
-    // };
-
-    // return {
-    //   ...state,
-    //   items: update(state.items, { $push: [Math.random()] }),
-    // };
+    return {
+      ...state,
+      items: [...state.items, Math.random()],
+    };
   }
 
   return state;

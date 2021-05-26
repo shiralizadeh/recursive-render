@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useCallback, useContext, useState } from "react";
 import useEventbus from "./event";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
@@ -41,39 +41,17 @@ const getWidget = (widgetId) =>
 console.log(getWidget);
 
 function Renderer({ widgetId, level, indx }) {
-  // const widget = useSelector(store => store.widgets[widgetId]);
+  const context = useContext(ElementContext);
+
+  // const widget = useSelector((store) => store.widgets[widgetId]);
   const widget = useSelector((store) => getWidget(widgetId)(store));
   const dispatch = useDispatch();
 
   console.log(widgetId, widget);
 
-  const context = useContext(ElementContext);
-
-  const [index, setIndex] = useState(0);
-  const click = () => {
+  const click = useCallback(() => {
     dispatch({ type: "updateWidget", payload: widget });
-
-    if (false && index === 2) {
-      fireEvent({
-        index,
-        level,
-      });
-
-      Promise.resolve().then(() => console.log("here"));
-    }
-
-    setIndex((index) => index + 1);
-  };
-
-  const { fireEvent } = useEventbus({
-    onEvent: (action) => {
-      if (level === 2) {
-        setIndex(1000);
-      }
-
-      console.log(action);
-    },
-  });
+  }, [widget]);
 
   return (
     <Wrapper>
@@ -87,7 +65,7 @@ function Renderer({ widgetId, level, indx }) {
         </>
       )}
       <Button onClick={click} size={level + 10}>
-        OK ({index}) Count ({widget.count})
+        OK (-) Count ({widget.count})
       </Button>
       {widget.children?.length && (
         <ul className="App">
