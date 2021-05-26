@@ -108,7 +108,16 @@ function rootReducer(state = initialState, action) {
   if (action.type === "updateRoot") {
     return {
       ...state,
-      items: [...state.items, Math.random()],
+      // items: [...state.items, Math.random()],
+      widgets: {
+        ...state.widgets,
+        "6b0be748-44c0-43d9-946b-8f5434bfa48e": {
+          id: "6b0be748-44c0-43d9-946b-8f5434bfa48e",
+          title: "Child A.B.A",
+          count: 0,
+          children: [],
+        },
+      }
     };
   }
 
