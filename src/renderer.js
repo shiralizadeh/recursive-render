@@ -55,15 +55,7 @@ function Renderer({ widgetId, level, indx }) {
 
   return (
     <Wrapper>
-      {indx === 1 && level === 2 ? (
-        <OtherRed />
-      ) : level === 3 ? (
-        <OtherBlue />
-      ) : (
-        <>
-          Child {widget.title} {context?.selected ? "Yes" : ""}
-        </>
-      )}
+      Child {widget.title} {context?.selected ? "Yes" : ""}
       <Button onClick={click} size={level + 10}>
         OK (-) Count ({widget.count})
       </Button>
