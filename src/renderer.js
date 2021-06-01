@@ -57,7 +57,7 @@ function Renderer({ widgetId, level, indx }) {
     <Wrapper>
       Child {widget.title} {context?.selected ? "Yes" : ""}
       <Button onClick={click} size={level + 10}>
-        OK (-) Count ({widget.count})
+        Count ({widget.count})
       </Button>
       {widget.children?.length && (
         <ul className="App">
