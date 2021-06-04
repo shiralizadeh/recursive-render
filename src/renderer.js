@@ -3,6 +3,7 @@ import useEventbus from "./event";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { createSelector } from "reselect";
+import { useDrop } from "react-dnd";
 
 const Color = styled.button`
   color: red;
@@ -14,12 +15,28 @@ const Button = styled(Color)`
 
 const ElementContext = createContext();
 
-function Wrapper({ level, children }) {
+function Wrapper({ x, y, children }) {
   const [selected, setSelected] = useState(false);
+
+  const [{ isOver }, drop] = useDrop(
+    () => ({
+      accept: "KNIGHT",
+      drop: () => console.log({ x, y }),
+      collect: (monitor) => ({
+        isOver: !!monitor.isOver(),
+      }),
+      canDrop: function () {
+        console.log(arguments);
+      },
+    }),
+    [x, y]
+  );
 
   return (
     <ElementContext.Provider value={{ selected }}>
       <div
+        ref={drop}
+        style={{ position: "relative" }}
         onClick={(e) => {
           setSelected(true);
 
@@ -27,6 +44,21 @@ function Wrapper({ level, children }) {
         }}
       >
         {children}
+        {isOver ? "T" : "F"}
+        {isOver && (
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              height: "100%",
+              width: "100%",
+              zIndex: 1,
+              opacity: 0.5,
+              backgroundColor: "yellow",
+            }}
+          />
+        )}
       </div>
     </ElementContext.Provider>
   );
@@ -55,7 +87,7 @@ function Renderer({ widgetId, level, indx }) {
 
   return (
     <Wrapper>
-      Child {widget.title} {context?.selected ? "Yes" : ""}
+      Child {widget.title} {context?.selected ? "Yes" : ""} -{" "}
       <Button onClick={click} size={level + 10}>
         Count ({widget.count})
       </Button>
