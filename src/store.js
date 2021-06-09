@@ -117,7 +117,45 @@ function rootReducer(state = initialState, action) {
           count: 0,
           children: [],
         },
-      }
+      },
+    };
+  }
+
+  if (action.type === "selectWidget") {
+    let selectedWidget, toSelectWidget;
+
+    for (const key in state.widgets) {
+      const widget = state.widgets[key];
+
+      if (widget.isSelected) selectedWidget = widget;
+      if (widget.id == action.payload.id) toSelectWidget = widget;
+    }
+
+    const override = {};
+    if (selectedWidget) {
+      selectedWidget.isSelected = false;
+
+      override[selectedWidget.id] = {
+        ...state.widgets[selectedWidget.id],
+      };
+    }
+
+    if (toSelectWidget) {
+      toSelectWidget.isSelected = true;
+
+      override[toSelectWidget.id] = {
+        ...state.widgets[toSelectWidget.id],
+      };
+    }
+
+    console.log(override, state);
+
+    return {
+      ...state,
+      widgets: {
+        ...state.widgets,
+        ...override,
+      },
     };
   }
 

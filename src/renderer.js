@@ -13,54 +13,53 @@ const Button = styled(Color)`
   font-size: ${(props) => props.size}px;
 `;
 
-const ElementContext = createContext();
-
-function Wrapper({ x, y, children }) {
-  const [selected, setSelected] = useState(false);
-
-  const [{ isOver }, drop] = useDrop(
+function Wrapper({ onSelect, widget, children }) {
+  const [{ canDrop }, drop] = useDrop(
     () => ({
       accept: "KNIGHT",
-      drop: () => console.log({ x, y }),
+      drop: () => console.log("droped"),
       collect: (monitor) => ({
-        isOver: !!monitor.isOver(),
+        canDrop: !!monitor.canDrop(),
       }),
       canDrop: function () {
-        console.log(arguments);
+        return widget.isSelected;
       },
     }),
-    [x, y]
+    [widget]
   );
 
-  return (
-    <ElementContext.Provider value={{ selected }}>
-      <div
-        ref={drop}
-        style={{ position: "relative" }}
-        onClick={(e) => {
-          setSelected(true);
+  let styles = {};
 
-          e.stopPropagation();
-        }}
-      >
-        {children}
-        {isOver ? "T" : "F"}
-        {isOver && (
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              height: "100%",
-              width: "100%",
-              zIndex: 1,
-              opacity: 0.5,
-              backgroundColor: "yellow",
-            }}
-          />
-        )}
-      </div>
-    </ElementContext.Provider>
+  if (widget.isSelected) styles = { border: "1px solid red" };
+
+  console.log("render", canDrop);
+
+  return (
+    <div
+      ref={drop}
+      style={{ position: "relative", ...styles }}
+      onClick={(e) => {
+        onSelect();
+
+        e.stopPropagation();
+      }}
+    >
+      {children}
+      {canDrop && (
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            height: "100%",
+            width: "100%",
+            zIndex: 1,
+            opacity: 0.5,
+            backgroundColor: "yellow",
+          }}
+        />
+      )}
+    </div>
   );
 }
 
@@ -73,7 +72,7 @@ const getWidget = (widgetId) =>
 console.log(getWidget);
 
 function Renderer({ widgetId, level, indx }) {
-  const context = useContext(ElementContext);
+  console.log("WWWW");
 
   // const widget = useSelector((store) => store.widgets[widgetId]);
   const widget = useSelector((store) => getWidget(widgetId)(store));
@@ -85,11 +84,16 @@ function Renderer({ widgetId, level, indx }) {
     dispatch({ type: "updateWidget", payload: widget });
   }, [widget]);
 
+  const onSelect = useCallback(
+    () => dispatch({ type: "selectWidget", payload: widget }),
+    [widget]
+  );
+
   return (
-    <Wrapper>
-      Child {widget.title} {context?.selected ? "Yes" : ""} -{" "}
+    <Wrapper widget={widget} onSelect={onSelect}>
+      {widget.title}
       <Button onClick={click} size={level + 10}>
-        Count ({widget.count})
+        Count ({widget.count}) {widget.isSelected ? "T" : "F"}
       </Button>
       {widget.children?.length && (
         <ul className="App">
